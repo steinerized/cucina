@@ -2,145 +2,210 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cheesecake Pro Plus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cheesecake & Crema Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
-        input[type="range"] { height: 8px; border-radius: 5px; background: #e5e7eb; outline: none; }
+        .tab-active { border-bottom: 3px solid white; font-weight: bold; }
+        input[type="range"] { accent-color: #f43f5e; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans pb-10" x-data="calculator()">
+<body class="bg-slate-100 text-slate-900 font-sans pb-10" x-data="app()">
     
-    <header class="bg-rose-500 text-white p-6 shadow-lg sticky top-0 z-10">
-        <h1 class="text-2xl font-bold text-center">🍰 Cheesecake Pro Plus</h1>
-        <p class="text-center text-rose-100 text-sm">Calcolatore proporzionale</p>
+    <header class="bg-rose-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="p-4 pb-0">
+            <h1 class="text-xl font-bold text-center mb-4">👨‍🍳 Food Lab Pro</h1>
+            <div class="flex justify-around">
+                <button @click="tab = 'cheesecake'" :class="tab === 'cheesecake' ? 'tab-active' : ''" class="pb-2 px-4 transition-all">Cheesecake</button>
+                <button @click="tab = 'crema'" :class="tab === 'crema' ? 'tab-active' : ''" class="pb-2 px-4 transition-all">Crema Nerd</button>
+            </div>
+        </div>
     </header>
 
-    <main class="max-w-md mx-auto p-4 space-y-6">
-        
-        <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-            <div class="flex justify-between items-center">
-                <h2 class="font-bold text-rose-600 flex items-center gap-2">
-                    ⚙️ Parametri Base
-                </h2>
-                <button @click="reset()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold py-1 px-3 rounded-full transition-colors">
-                    RESET
-                </button>
+    <main class="max-w-md mx-auto p-4">
+
+        <div x-show="tab === 'cheesecake'" x-cloak class="space-y-6">
+            <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-bold text-rose-600">⚙️ Parametri Cheesecake</h2>
+                    <button @click="resetCC()" class="text-[10px] bg-slate-100 px-2 py-1 rounded">RESET</button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="flex justify-between text-xs font-bold mb-1">DIAMETRO: <span class="text-rose-600" x-text="cc.diametro + ' cm'"></span></label>
+                        <input type="range" min="10" max="40" x-model.number="cc.diametro" class="w-full">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase">Dolcezza</label>
+                            <select x-model.number="cc.dolcezza" class="w-full border rounded-lg p-2 text-sm">
+                                <option value="0.25">Delicata</option><option value="0.30">Equilibrata</option><option value="0.35">Intensa</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase">Consistenza</label>
+                            <select x-model.number="cc.consistenza" class="w-full border rounded-lg p-2 text-sm">
+                                <option value="0.3">Cremosa</option><option value="0.6">Standard</option><option value="1.0">Compatta</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid gap-4">
+                <div class="bg-white p-4 rounded-xl border-l-4 border-amber-400 shadow-sm">
+                    <span class="text-xs font-bold text-slate-400">BASE</span>
+                    <div class="flex justify-between font-bold"><span>Biscotti</span><span x-text="resCC.biscotti + 'g'"></span></div>
+                    <div class="flex justify-between font-bold"><span>Burro</span><span x-text="resCC.burro + 'g'"></span></div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border-l-4 border-blue-400 shadow-sm">
+                    <span class="text-xs font-bold text-slate-400">FREDDA</span>
+                    <div class="flex justify-between"><span>Philadelphia</span><span class="font-bold" x-text="resCC.fredda.philadelphia + 'g'"></span></div>
+                    <div class="flex justify-between"><span>Panna</span><span class="font-bold" x-text="resCC.fredda.panna + 'g'"></span></div>
+                    <div class="flex justify-between"><span>Gelatina</span><span class="font-bold text-blue-600" x-text="resCC.fredda.gelatina + 'g'"></span></div>
+                </div>
             </div>
+        </div>
+
+        <div x-show="tab === 'crema'" x-cloak class="space-y-6">
             
-            <div class="space-y-4">
+            <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-bold text-indigo-600">🧀 Mix Formaggi (PRO)</h2>
+                    <span class="text-[10px] bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full font-bold" x-text="totalFormaggio + 'g'"></span>
+                </div>
+                
+                <div class="space-y-3">
+                    <template x-for="(item, index) in mix" :key="index">
+                        <div class="flex gap-2 items-end border-b pb-3">
+                            <div class="flex-1">
+                                <label class="text-[10px] uppercase text-slate-400 font-bold">Tipo Formaggio</label>
+                                <select x-model="item.tipo" class="w-full border rounded p-1 text-xs">
+                                    <template x-for="(data, name) in coeffs" :key="name">
+                                        <option :value="name" x-text="name"></option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div class="w-20">
+                                <label class="text-[10px] uppercase text-slate-400 font-bold">Grammi</label>
+                                <input type="number" x-model.number="item.peso" class="w-full border rounded p-1 text-xs text-center font-bold">
+                            </div>
+                            <button @click="removeCheese(index)" class="text-rose-500 font-bold px-2">×</button>
+                        </div>
+                    </template>
+                    <button @click="addCheese()" x-show="mix.length < 3" class="w-full py-1 border-2 border-dashed border-slate-200 text-slate-400 text-xs font-bold rounded">+ AGGIUNGI FORMAGGIO</button>
+                </div>
+            </section>
+
+            <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-5">
+                <h2 class="font-bold text-slate-700">🧪 Ottimizzazione Chimica</h2>
+                
                 <div>
-                    <label class="flex justify-between text-sm font-medium mb-1">
-                        Diametro stampo: <span class="text-rose-600 font-bold" x-text="diametro + ' cm'"></span>
+                    <label class="flex justify-between text-xs font-bold mb-2">CONSISTENZA: 
+                        <span class="text-indigo-600 px-2 bg-indigo-50 rounded" x-text="consistenzaLabels[consistenzaIndex]"></span>
                     </label>
-                    <input type="range" min="10" max="40" step="1" x-model.number="diametro" class="w-full accent-rose-500">
+                    <input type="range" min="0" max="2" step="1" x-model.number="consistenzaIndex" class="w-full accent-indigo-600">
+                    <div class="flex justify-between text-[9px] text-slate-400 mt-1 uppercase font-bold">
+                        <span>Fluida</span><span>Nappante</span><span>Densa</span>
+                    </div>
                 </div>
 
                 <div>
-                    <label class="flex justify-between text-sm font-medium mb-1">
-                        Altezza dolce: <span class="text-rose-600 font-bold" x-text="altezza + ' cm'"></span>
-                    </label>
-                    <input type="range" min="3" max="8" step="0.5" x-model.number="altezza" class="w-full accent-rose-500">
+                    <label class="flex justify-between text-xs font-bold mb-1">CORREZIONE PANNA: <span class="text-indigo-600" x-text="Math.round(pannaCorrection * 100) + '%'"></span></label>
+                    <input type="range" min="0.5" max="1.5" step="0.1" x-model.number="pannaCorrection" class="w-full accent-indigo-600">
                 </div>
+            </section>
 
-                <div class="grid grid-cols-2 gap-4 pt-2">
-                    <div>
-                        <label class="block text-xs font-medium uppercase text-slate-400 mb-1">Dolcezza</label>
-                        <select x-model.number="dolcezza" class="w-full border rounded-lg p-2 text-sm bg-white">
-                            <option value="0.25">Delicata</option>
-                            <option value="0.30">Equilibrata</option>
-                            <option value="0.35">Intensa</option>
-                        </select>
+            <div class="bg-indigo-900 text-white p-6 rounded-2xl shadow-xl space-y-4">
+                <h3 class="text-center font-bold uppercase tracking-widest text-indigo-300 text-xs">Ricetta Risultante</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center border-b border-indigo-800 pb-2">
+                        <span class="text-sm">Panna Liquida</span>
+                        <span class="text-xl font-mono font-bold" x-text="resCrema.panna + 'g'"></span>
                     </div>
-                    <div>
-                        <label class="block text-xs font-medium uppercase text-slate-400 mb-1">Consistenza</label>
-                        <select x-model.number="consistenza" class="w-full border rounded-lg p-2 text-sm bg-white">
-                            <option value="0.3">Cremosa</option>
-                            <option value="0.6">Standard</option>
-                            <option value="1.0">Compatta</option>
-                        </select>
+                    <div class="flex justify-between items-center border-b border-indigo-800 pb-2">
+                        <span class="text-sm">Liquidi Extra (Latte/Aromi)</span>
+                        <span class="text-xl font-mono font-bold" x-text="resCrema.liquido + 'g'"></span>
                     </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">Addensante (Maizena/Gomma)</span>
+                        <span class="text-xl font-mono font-bold text-amber-400" x-text="resCrema.addensante + 'g'"></span>
+                    </div>
+                </div>
+                <div class="pt-2 text-[10px] text-indigo-300 italic text-center">
+                    * Proporzioni calcolate sul mix di <span x-text="mix.length"></span> formaggi.
                 </div>
             </div>
-        </section>
-
-        <div class="space-y-4">
-            <section class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-amber-400">
-                <h3 class="font-bold mb-3 text-amber-700">🍪 Base Biscotto</h3>
-                <div class="flex justify-between border-b py-2"><span>Biscotti secchi</span><span class="font-mono font-bold text-lg" x-text="res.biscotti + 'g'"></span></div>
-                <div class="flex justify-between py-2"><span>Burro fuso</span><span class="font-mono font-bold text-lg" x-text="res.burro + 'g'"></span></div>
-            </section>
-
-            <section class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-blue-400">
-                <h3 class="font-bold mb-3 text-blue-700">❄️ Versione Fredda</h3>
-                <div class="space-y-2">
-                    <div class="flex justify-between border-b pb-1"><span>Philadelphia</span> <span x-text="res.fredda.philadelphia + 'g'" class="font-bold"></span></div>
-                    <div class="flex justify-between border-b pb-1"><span>Panna (montata)</span> <span x-text="res.fredda.panna + 'g'" class="font-bold"></span></div>
-                    <div class="flex justify-between border-b pb-1"><span>Zucchero</span> <span x-text="res.fredda.zucchero + 'g'" class="font-bold"></span></div>
-                    <div class="flex justify-between"><span>Gelatina (fogli)</span> <span x-text="res.fredda.gelatina + 'g'" class="font-bold"></span></div>
-                </div>
-            </section>
-
-            <section class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-orange-500">
-                <h3 class="font-bold mb-3 text-orange-700">🔥 Versione Basca</h3>
-                <div class="space-y-2">
-                    <div class="flex justify-between border-b pb-1"><span>Philadelphia</span> <span x-text="res.basca.philadelphia + 'g'" class="font-bold"></span></div>
-                    <div class="flex justify-between border-b pb-1"><span>Zucchero</span> <span x-text="res.basca.zucchero + 'g'" class="font-bold"></span></div>
-                    <div class="flex justify-between border-b pb-1"><span>Uova (medie)</span> <span x-text="res.basca.uova" class="font-bold"></span></div>
-                    <div class="flex justify-between border-b pb-1"><span>Panna Liquida</span> <span x-text="res.basca.panna + 'g'" class="font-bold"></span></div>
-                    <div class="flex justify-between"><span>Farina / Amido</span> <span x-text="res.basca.farina + 'g'" class="font-bold"></span></div>
-                </div>
-            </section>
         </div>
         
-        <p class="text-center text-[10px] text-slate-400 uppercase tracking-widest pt-4">© 2026 Cheesecake Pro Plus</p>
     </main>
 
     <script>
-        function calculator() {
+        function app() {
             return {
-                // Valori di default
-                diametro: 22,
-                altezza: 4.5,
-                dolcezza: 0.30,
-                consistenza: 0.6,
+                tab: 'crema',
                 
-                reset() {
-                    this.diametro = 22;
-                    this.altezza = 4.5;
-                    this.dolcezza = 0.30;
-                    this.consistenza = 0.6;
-                },
-
-                get res() {
-                    // Costanti di calcolo
-                    const r_ref = 11; 
-                    const h_ref = 4.5;
-                    const vol_ref = Math.PI * Math.pow(r_ref, 2) * h_ref;
-                    
-                    const r_cur = this.diametro / 2;
-                    const vol_cur = Math.PI * Math.pow(r_cur, 2) * this.altezza;
-                    const scala = vol_cur / vol_ref;
-
+                // --- DATI CHEESECAKE ---
+                cc: { diametro: 22, altezza: 4.5, dolcezza: 0.3, consistenza: 0.6 },
+                resetCC() { this.cc = { diametro: 22, altezza: 4.5, dolcezza: 0.3, consistenza: 0.6 } },
+                get resCC() {
+                    let scala = (Math.PI * Math.pow(this.cc.diametro/2, 2) * this.cc.altezza) / (Math.PI * Math.pow(11, 2) * 4.5);
                     return {
-                        biscotti: Math.round(200 * (Math.pow(this.diametro, 2) / Math.pow(22, 2))),
-                        burro: Math.round(90 * (Math.pow(this.diametro, 2) / Math.pow(22, 2))),
+                        biscotti: Math.round(200 * (Math.pow(this.cc.diametro, 2) / 484)),
+                        burro: Math.round(90 * (Math.pow(this.cc.diametro, 2) / 484)),
                         fredda: {
                             philadelphia: Math.round(500 * scala),
                             panna: Math.round(250 * scala),
-                            zucchero: Math.round(500 * scala * this.dolcezza),
-                            // Calcolo gelatina corretto per evitare string concatenations
-                            gelatina: Math.round(10 * scala * (Number(this.consistenza) + 0.4))
-                        },
-                        basca: {
-                            philadelphia: Math.round(600 * scala),
-                            zucchero: Math.round(600 * scala * this.dolcezza),
-                            uova: Math.max(1, Math.round(4 * scala)),
-                            panna: Math.round(350 * scala),
-                            farina: Math.round(25 * scala)
+                            gelatina: Math.round(10 * scala * (Number(this.cc.consistenza) + 0.4))
                         }
+                    }
+                },
+
+                // --- DATI CREMA NERD ---
+                coeffs: {
+                    "Fresco (Philadelphia)": { p: 0.5, l: 0.05, a: 0.00 },
+                    "Cremoso (Mascarpone)": { p: 0.4, l: 0.05, a: 0.00 },
+                    "Semi-stagionato": { p: 0.7, l: 0.15, a: 0.01 },
+                    "Stagionato (Pecorino)": { p: 0.9, l: 0.25, a: 0.02 },
+                    "Filante (Fontina)": { p: 0.6, l: 0.15, a: 0.01 },
+                    "Erborinato (Zola)": { p: 0.7, l: 0.05, a: 0.00 }
+                },
+                mix: [{ tipo: 'Fresco (Philadelphia)', peso: 200 }],
+                consistenzaIndex: 1,
+                consistenzaLabels: ['Fluida', 'Nappante', 'Densa'],
+                pannaCorrection: 1.0,
+
+                addCheese() { this.mix.push({ tipo: 'Cremoso (Mascarpone)', peso: 100 }) },
+                removeCheese(i) { this.mix.splice(i, 1) },
+                get totalFormaggio() { return this.mix.reduce((sum, item) => sum + item.peso, 0) },
+
+                get resCrema() {
+                    let totalP = 0, totalL = 0, totalA = 0;
+                    
+                    // Calcolo pesato basato sul mix
+                    this.mix.forEach(item => {
+                        let c = this.coeffs[item.tipo];
+                        totalP += item.peso * c.p;
+                        totalL += item.peso * c.l;
+                        totalA += item.peso * c.a;
+                    });
+
+                    // Modificatori consistenza
+                    // 0: Fluida (Panna +30%, Liquido +50%, Addensante -50%)
+                    // 1: Nappante (Base)
+                    // 2: Densa (Panna -20%, Liquido -40%, Addensante +100%)
+                    const mods = [
+                        { p: 1.3, l: 1.5, a: 0.5 },
+                        { p: 1.0, l: 1.0, a: 1.0 },
+                        { p: 0.8, l: 0.6, a: 2.0 }
+                    ][this.consistenzaIndex];
+
+                    return {
+                        panna: Math.round(totalP * mods.p * this.pannaCorrection),
+                        liquido: Math.round(totalL * mods.l),
+                        addensante: (totalA * mods.a).toFixed(1)
                     }
                 }
             }
