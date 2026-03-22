@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheesecake Pro Plus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+        input[type="range"] { height: 8px; border-radius: 5px; background: #e5e7eb; outline: none; transition: background 0.2s; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans pb-10" x-data="calculator()">
+    
+    <header class="bg-rose-500 text-white p-6 shadow-lg sticky top-0 z-10">
+        <h1 class="text-2xl font-bold text-center">🍰 Cheesecake Pro Plus</h1>
+        <p class="text-center text-rose-100 text-sm">Calcolatore proporzionale istantaneo</p>
+    </header>
+
+    <main class="max-w-md mx-auto p-4 space-y-6">
+        
+        <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+            <h2 class="font-bold text-rose-600 flex items-center gap-2">
+                ⚙️ Parametri Base
+            </h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="flex justify-between text-sm font-medium mb-1">
+                        Diametro stampo: <span class="text-rose-600 font-bold" x-text="diametro + ' cm'"></span>
+                    </label>
+                    <input type="range" min="10" max="40" step="1" x-model="diametro" class="w-full accent-rose-500">
+                </div>
+
+                <div>
+                    <label class="flex justify-between text-sm font-medium mb-1">
+                        Altezza dolce: <span class="text-rose-600 font-bold" x-text="altezza + ' cm'"></span>
+                    </label>
+                    <input type="range" min="3" max="8" step="0.5" x-model="altezza" class="w-full accent-rose-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 pt-2">
+                    <div>
+                        <label class="block text-xs font-medium uppercase text-slate-400 mb-1">Dolcezza</label>
+                        <select x-model="dolcezza" class="w-full border rounded-lg p-2 text-sm">
+                            <option value="0.25">Delicata</option>
+                            <option value="0.30">Equilibrata</option>
+                            <option value="0.35">Intensa</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium uppercase text-slate-400 mb-1">Consistenza</label>
+                        <select x-model="consistenza" class="w-full border rounded-lg p-2 text-sm">
+                            <option value="0.3">Molto Cremosa</option>
+                            <option value="0.6">Standard</option>
+                            <option value="1.0">Compatta</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="space-y-4">
+            
+            <section class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-amber-400">
+                <h3 class="font-bold mb-3 flex items-center gap-2 text-amber-700">🍪 Base Biscotto</h3>
+                <div class="flex justify-between border-b py-2">
+                    <span>Biscotti secchi</span>
+                    <span class="font-mono font-bold" x-text="res.biscotti + ' g'"></span>
+                </div>
+                <div class="flex justify-between py-2">
+                    <span>Burro fuso</span>
+                    <span class="font-mono font-bold" x-text="res.burro + ' g'"></span>
+                </div>
+            </section>
+
+            <section class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-blue-400">
+                <h3 class="font-bold mb-3 flex items-center gap-2 text-blue-700">❄️ Versione Fredda</h3>
+                <div class="space-y-2 text-sm md:text-base">
+                    <div class="flex justify-between border-b pb-1"><span>Philadelphia</span> <span x-text="res.fredda.philadelphia + ' g'" class="font-bold"></span></div>
+                    <div class="flex justify-between border-b pb-1"><span>Panna (da montare)</span> <span x-text="res.fredda.panna + ' g'" class="font-bold"></span></div>
+                    <div class="flex justify-between border-b pb-1"><span>Zucchero</span> <span x-text="res.fredda.zucchero + ' g'" class="font-bold"></span></div>
+                    <div class="flex justify-between"><span>Gelatina (fogli)</span> <span x-text="res.fredda.gelatina + ' g'" class="font-bold"></span></div>
+                </div>
+            </section>
+
+            <section class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-orange-500">
+                <h3 class="font-bold mb-3 flex items-center gap-2 text-orange-700">🔥 Versione Basca (Cottura)</h3>
+                <div class="space-y-2 text-sm md:text-base">
+                    <div class="flex justify-between border-b pb-1"><span>Philadelphia</span> <span x-text="res.basca.philadelphia + ' g'" class="font-bold"></span></div>
+                    <div class="flex justify-between border-b pb-1"><span>Zucchero</span> <span x-text="res.basca.zucchero + ' g'" class="font-bold"></span></div>
+                    <div class="flex justify-between border-b pb-1"><span>Uova</span> <span x-text="res.basca.uova + ' pz'" class="font-bold"></span></div>
+                    <div class="flex justify-between border-b pb-1"><span>Panna Liquida</span> <span x-text="res.basca.panna + ' g'" class="font-bold"></span></div>
+                    <div class="flex justify-between"><span>Farina / Amido</span> <span x-text="res.basca.farina + ' g'" class="font-bold"></span></div>
+                </div>
+                <div class="mt-4 p-3 bg-orange-50 rounded-lg text-xs text-orange-800 italic">
+                    Forno statico: 210°C per circa 25-30 min. Centro tremolante = perfetta.
+                </div>
+            </section>
+        </div>
+        
+        <p class="text-center text-[10px] text-slate-400 uppercase tracking-widest">Powered by Gemini • Cheesecake Calculator</p>
+    </main>
+
+    <script>
+        function calculator() {
+            return {
+                diametro: 22,
+                altezza: 4.5,
+                dolcezza: 0.3,
+                consistenza: 0.6,
+                
+                get res() {
+                    // Calcolo fattore di scala basato sul volume (V = pi * r^2 * h)
+                    const r_ref = 11; // Riferimento 22cm
+                    const h_ref = 4.5;
+                    const vol_ref = Math.PI * Math.pow(r_ref, 2) * h_ref;
+                    
+                    const r_cur = this.diametro / 2;
+                    const vol_cur = Math.PI * Math.pow(r_cur, 2) * this.altezza;
+                    const scala = vol_cur / vol_ref;
+
+                    return {
+                        biscotti: Math.round(200 * (Math.pow(this.diametro, 2) / Math.pow(22, 2))),
+                        burro: Math.round(90 * (Math.pow(this.diametro, 2) / Math.pow(22, 2))),
+                        fredda: {
+                            philadelphia: Math.round(500 * scala),
+                            panna: Math.round(250 * scala),
+                            zucchero: Math.round(500 * scala * this.dolcezza),
+                            gelatina: Math.round(10 * scala * (this.consistenza + 0.4))
+                        },
+                        basca: {
+                            philadelphia: Math.round(600 * scala),
+                            zucchero: Math.round(600 * scala * this.dolcezza),
+                            uova: Math.round(4 * scala),
+                            panna: Math.round(350 * scala),
+                            farina: Math.round(25 * scala)
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
