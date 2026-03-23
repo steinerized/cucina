@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lab Pasticceria Pro</title>
+    <title>Cucina Maero! Vers. 1.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
@@ -17,7 +17,7 @@
     <header class="bg-rose-500 text-white shadow-lg sticky top-0 z-50">
         <div class="max-w-md mx-auto">
             <div class="p-4 text-center">
-                <h1 class="text-xl font-bold">🍰 Lab Pasticceria Pro</h1>
+                <h1 class="text-xl font-bold">🍰 Cucina Maero! Vers. 1.2</h1>
             </div>
             <div class="flex">
                 <button @click="tab = 'cheesecake'" :class="tab === 'cheesecake' ? 'tab-active' : ''" class="flex-1 py-3 text-[10px] uppercase tracking-wider transition-all">Cheesecake</button>
@@ -70,9 +70,9 @@
                     <h3 class="font-bold mb-3 text-blue-700 uppercase text-xs tracking-widest">❄️ Versione Fredda</h3>
                     <div class="space-y-2">
                         <div class="flex justify-between border-b pb-1 text-sm"><span>Philadelphia</span> <span x-text="resCC.fredda.philadelphia + 'g'" class="font-bold"></span></div>
-                        <div class="flex justify-between border-b pb-1 text-sm"><span>Panna (montata)</span> <span x-text="resCC.fredda.panna + 'g'" class="font-bold"></span></div>
+                        <div class="flex justify-between border-b pb-1 text-sm"><span>Panna</span> <span x-text="resCC.fredda.panna + 'g'" class="font-bold"></span></div>
                         <div class="flex justify-between border-b pb-1 text-sm"><span>Zucchero</span> <span x-text="resCC.fredda.zucchero + 'g'" class="font-bold"></span></div>
-                        <div class="flex justify-between text-sm font-bold text-blue-600"><span>Gelatina (fogli)</span> <span x-text="resCC.fredda.gelatina + 'g'"></span></div>
+                        <div class="flex justify-between text-sm font-bold text-blue-600"><span>Gelatina</span> <span x-text="resCC.fredda.gelatina + 'g'"></span></div>
                     </div>
                 </section>
                 <section class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-orange-500">
@@ -80,9 +80,9 @@
                     <div class="space-y-2">
                         <div class="flex justify-between border-b pb-1 text-sm"><span>Philadelphia</span> <span x-text="resCC.basca.philadelphia + 'g'" class="font-bold"></span></div>
                         <div class="flex justify-between border-b pb-1 text-sm"><span>Zucchero</span> <span x-text="resCC.basca.zucchero + 'g'" class="font-bold"></span></div>
-                        <div class="flex justify-between border-b pb-1 text-sm"><span>Uova (medie)</span> <span x-text="resCC.basca.uova" class="font-bold"></span></div>
+                        <div class="flex justify-between border-b pb-1 text-sm"><span>Uovo</span> <span x-text="resCC.basca.uova" class="font-bold"></span></div>
                         <div class="flex justify-between border-b pb-1 text-sm"><span>Panna Liquida</span> <span x-text="resCC.basca.panna + 'g'" class="font-bold"></span></div>
-                        <div class="flex justify-between text-sm"><span>Farina / Amido</span> <span x-text="resCC.basca.farina + 'g'" class="font-bold"></span></div>
+                        <div class="flex justify-between text-sm"><span>Farina/Amido</span> <span x-text="resCC.basca.farina + 'g'" class="font-bold"></span></div>
                     </div>
                 </section>
             </div>
@@ -91,7 +91,7 @@
         <div x-show="tab === 'crema'" x-cloak class="space-y-6">
             <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                 <div class="flex justify-between items-center">
-                    <h2 class="font-bold text-indigo-600">🧀 Mix Formaggi (PRO)</h2>
+                    <h2 class="font-bold text-indigo-600">🧀 Crema di Formaggi</h2>
                     <span class="text-xs font-bold text-indigo-400" x-text="'Tot: ' + totalFormaggio + 'g'"></span>
                 </div>
                 <div class="space-y-3">
@@ -128,7 +128,6 @@
                 </div>
             </section>
             <div class="bg-indigo-600 text-white p-6 rounded-2xl shadow-xl space-y-4 relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 opacity-10 font-black text-4xl">NERD</div>
                 <div class="space-y-3 relative z-10">
                     <div class="flex justify-between items-center border-b border-indigo-500 pb-2"><span>Panna Liquida</span><span class="text-2xl font-mono font-bold" x-text="resCrema.panna + 'g'"></span></div>
                     <div class="flex justify-between items-center border-b border-indigo-500 pb-2"><span>Liquidi Extra</span><span class="text-2xl font-mono font-bold" x-text="resCrema.liquido + 'g'"></span></div>
@@ -229,7 +228,7 @@
             </div>
         </div>
         
-        <p class="text-center text-[10px] text-slate-400 uppercase tracking-widest mt-8">© 2026 Lab Pasticceria Pro • v2.0</p>
+        <p class="text-center text-[10px] text-slate-400 uppercase tracking-widest mt-8">© 2026 Matteo Maero • v1.2</p>
     </main>
 
     <script>
