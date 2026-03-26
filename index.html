@@ -230,8 +230,14 @@
                     const scala = vol_cur / vol_ref;
                     const scalaSuperficie = Math.pow(this.cc.diametro, 2) / 484;
 
+                    // --- NUOVA LOGICA DI COMPENSAZIONE ---
+                    // Se aumentiamo il latte, aumentiamo leggermente gli addensanti (max +25% se latte al 50%)
+                    const fattoreCorrezione = 1 + (this.cc.percLatte / 200);
+
                     let farinaBase = 45 * scala;
-                    let addensanteFinale = this.cc.tipoAddensante === 'amido' ? Math.round(farinaBase * 0.75) : Math.round(farinaBase);
+                    let addensanteFinale = this.cc.tipoAddensante === 'amido' ? 
+                        Math.round(farinaBase * 0.75 * fattoreCorrezione) : 
+                        Math.round(farinaBase * fattoreCorrezione);
 
                     const pannaFreddaTot = 250 * scala;
                     const pannaBascaTot = 350 * scala;
@@ -246,7 +252,8 @@
                             panna: Math.round(pannaFreddaTot - latteFredda),
                             latte: latteFredda,
                             zucchero: Math.round(500 * scala * this.cc.dolcezza),
-                            gelatina: Math.round(10 * scala * (Number(this.cc.consistenza) + 0.4))
+                            // Gelatina compensata per la quota latte
+                            gelatina: Math.round(10 * scala * (Number(this.cc.consistenza) + 0.4) * fattoreCorrezione)
                         },
                         basca: {
                             philadelphia: Math.round(600 * scala),
