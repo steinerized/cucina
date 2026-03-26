@@ -64,6 +64,13 @@
                                 <option value="amido">Amido di Mais (Più setosa)</option>
                             </select>
                         </div>
+                        <div class="col-span-2 pt-2 border-t border-slate-100">
+                            <label class="flex justify-between text-[10px] font-bold text-slate-400 uppercase mb-1">
+                                Quota Latte (Sostituzione Panna): <span class="text-rose-600" x-text="cc.percLatte + '%'"></span>
+                            </label>
+                            <input type="range" min="0" max="50" step="5" x-model.number="cc.percLatte" class="w-full">
+                            <p class="text-[9px] text-slate-400 italic">Sostituisce parte della panna con latte (consigliato max 20%)</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -142,7 +149,10 @@
             </section>
             <div class="bg-indigo-600 text-white p-6 rounded-2xl shadow-xl space-y-4 relative overflow-hidden">
                 <div class="space-y-3 relative z-10">
-                    <div class="flex justify-between items-center border-b border-indigo-500 pb-2"><span>Panna Liquida</span><span class="text-2xl font-mono font-bold" x-text="resCrema.panna + 'g'"></span></div>
+                    <div class="flex justify-between border-b pb-1 text-sm"><span>Panna Liquida</span> <span x-text="resCC.basca.panna + 'g'" class="font-bold"></span></div>
+						<template x-if="resCC.basca.latte > 0">
+    						<div class="flex justify-between border-b pb-1 text-sm text-orange-400"><span>Latte (Intero/PS)</span> <span x-text="resCC.basca.latte + 'g'" class="font-bold"></span></div>
+						</template>
                     <div class="flex justify-between items-center border-b border-indigo-500 pb-2"><span>Liquidi Extra</span><span class="text-2xl font-mono font-bold" x-text="resCrema.liquido + 'g'"></span></div>
                     <div class="flex justify-between items-center"><span>Addensante</span><span class="text-2xl font-mono font-bold text-yellow-300" x-text="resCrema.addensante + 'g'"></span></div>
                 </div>
@@ -220,7 +230,10 @@
                 </div>
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
-                        <span class="text-slate-400 text-sm">Panna Fresca</span>
+                        <div class="flex justify-between border-b pb-1 text-sm"><span>Panna Fresca</span> <span x-text="resCC.fredda.panna + 'g'" class="font-bold"></span></div>
+							<template x-if="resCC.fredda.latte > 0">
+  							  <div class="flex justify-between border-b pb-1 text-sm text-blue-400"><span>Latte (Intero/PS)</span> <span x-text="resCC.fredda.latte + 'g'" class="font-bold"></span></div>
+						</template>
                         <span class="text-xl font-bold font-mono" x-text="Math.round(resPC.vol) + 'g'"></span>
                     </div>
                     <div class="flex justify-between items-center">
@@ -250,8 +263,8 @@
             return {
                 tab: 'cheesecake',
                 
-                cc: { diametro: 22, altezza: 4.5, dolcezza: 0.3, consistenza: 0.6, tipoAddensante: 'farina' },
-                resetCC() { this.cc = { diametro: 22, altezza: 4.5, dolcezza: 0.3, consistenza: 0.6, tipoAddensante: 'farina' } },
+                cc: { diametro: 22, altezza: 4.5, dolcezza: 0.3, consistenza: 0.6, tipoAddensante: 'farina', percLatte: 0 },
+                resetCC() { this.cc = { diametro: 22, altezza: 4.5, dolcezza: 0.3, consistenza: 0.6, tipoAddensante: 'farina', percLatte: 0 } },
                 get resCC() {
                     const r_ref = 11; const h_ref = 4.5;
                     const vol_ref = Math.PI * Math.pow(r_ref, 2) * h_ref;
@@ -260,30 +273,35 @@
                     const scala = vol_cur / vol_ref;
                     const scalaSuperficie = Math.pow(this.cc.diametro, 2) / 484;
 
-                    // --- CALCOLO BASCA RICALIBRATO ---
-                    // Aumentata farina base da 25 a 45 per massa ref di ~1300g (Ratio ~1:28)
-                    let farinaBase = 45 * scala;
-                    // L'amido ora calcolato al 75% della farina (Ratio ~1:38)
-                    let addensanteFinale = this.cc.tipoAddensante === 'amido' ? Math.round(farinaBase * 0.75) : Math.round(farinaBase);
+                let farinaBase = 45 * scala;
+                let addensanteFinale = this.cc.tipoAddensante === 'amido' ? Math.round(farinaBase * 0.75) : Math.round(farinaBase);
 
-                    return {
-                        biscotti: Math.round(200 * scalaSuperficie),
-                        burro: Math.round(90 * scalaSuperficie),
-                        fredda: {
-                            philadelphia: Math.round(500 * scala),
-                            panna: Math.round(250 * scala),
-                            zucchero: Math.round(500 * scala * this.cc.dolcezza),
-                            gelatina: Math.round(10 * scala * (Number(this.cc.consistenza) + 0.4))
-                        },
-                        basca: {
-                            philadelphia: Math.round(600 * scala),
-                            zucchero: Math.round(600 * scala * this.cc.dolcezza),
-                            uova: Math.max(1, Math.round(4 * scala)),
-                            panna: Math.round(350 * scala),
-                            addensante: addensanteFinale
-                        }
+                    // Calcolo ripartizione liquidi
+                    const pannaFreddaTot = 250 * scala;
+                    const pannaBascaTot = 350 * scala;
+                    const latteFredda = Math.round(pannaFreddaTot * (this.cc.percLatte / 100));
+                    const latteBasca = Math.round(pannaBascaTot * (this.cc.percLatte / 100));
+
+                return {
+                    biscotti: Math.round(200 * scalaSuperficie),
+                    burro: Math.round(90 * scalaSuperficie),
+                    fredda: {
+                        philadelphia: Math.round(500 * scala),
+                        panna: Math.round(pannaFreddaTot - latteFredda),
+                        latte: latteFredda,
+                        zucchero: Math.round(500 * scala * this.cc.dolcezza),
+                        gelatina: Math.round(10 * scala * (Number(this.cc.consistenza) + 0.4))
+                    },
+                    basca: {
+                        philadelphia: Math.round(600 * scala),
+                        zucchero: Math.round(600 * scala * this.cc.dolcezza),
+                        uova: Math.max(1, Math.round(4 * scala)),
+                        panna: Math.round(pannaBascaTot - latteBasca),
+                        latte: latteBasca,
+                        addensante: addensanteFinale
                     }
-                },
+                }
+            }
 
                 coeffs: {
                     "Fresco (Philadelphia)": { p: 0.5, l: 0.05, a: 0.00 },
