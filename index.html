@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cucina Maero! Vers. 1.4</title>
+    <title>Cucina Maero! Vers. 1.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
@@ -17,7 +17,7 @@
     <header class="bg-rose-500 text-white shadow-lg sticky top-0 z-50">
         <div class="max-w-md mx-auto">
             <div class="p-4 text-center">
-                <h1 class="text-xl font-bold">🍰 Cucina Maero! Vers. 1.4</h1>
+                <h1 class="text-xl font-bold">🍰 Cucina Maero! Vers. 1.5</h1>
             </div>
             <div class="flex">
                 <button @click="tab = 'cheesecake'" :class="tab === 'cheesecake' ? 'tab-active' : ''" class="flex-1 py-3 text-[10px] uppercase tracking-wider transition-all">Cheesecake</button>
@@ -68,8 +68,22 @@
                             <label class="flex justify-between text-[10px] font-bold text-slate-400 uppercase mb-1">
                                 Quota Latte (Sostituzione Panna): <span class="text-rose-600" x-text="cc.percLatte + '%'"></span>
                             </label>
-                            <input type="range" min="0" max="50" step="5" x-model.number="cc.percLatte" class="w-full">
+                            <input type="range" min="0" max="50" step="1" x-model.number="cc.percLatte" class="w-full">
                         </div>
+    					<div>
+        					<label class="block text-[10px] font-bold text-slate-400 uppercase">Tipo Gelatina</label>
+        					<select x-model="cc.tipoGelatina" class="w-full border rounded-lg p-2 text-sm bg-white">
+            					<option value="fogli">Fogli</option>
+            					<option value="polvere">Polvere</option>
+        					</select>
+    					</div>
+    					<template x-if="cc.tipoGelatina === 'fogli'">
+        					<div>
+            					<label class="block text-[10px] font-bold text-slate-400 uppercase">Peso Foglio (g)</label>
+            					<input type="number" step="0.1" x-model.number="cc.pesoFoglio" class="w-full border rounded-lg p-2 text-sm">
+        					</div>
+    					</template>
+
                     </div>
                 </div>
             </section>
@@ -77,8 +91,10 @@
             <div class="space-y-4">
                 <section class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-amber-400">
                     <h3 class="font-bold mb-3 text-amber-700 uppercase text-xs tracking-widest">🍪 Base Biscotto</h3>
-                    <div class="flex justify-between border-b py-2"><span>Biscotti secchi</span><span class="font-mono font-bold text-lg" x-text="resCC.biscotti + 'g'"></span></div>
-                    <div class="flex justify-between py-2"><span>Burro fuso</span><span class="font-mono font-bold text-lg" x-text="resCC.burro + 'g'"></span></div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between border-b pb-1 text-sm"><span>Biscotti secchi</span><span class="font-bold text-sm" x-text="resCC.biscotti + 'g'"></span></div>
+                        <div class="flex justify-between text-sm"><span>Burro fuso</span><span class="font-bold text-sm" x-text="resCC.burro + 'g'"></span></div>
+                    </div>
                 </section>
 
                 <section class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-blue-400">
@@ -87,10 +103,16 @@
                         <div class="flex justify-between border-b pb-1 text-sm"><span>Philadelphia</span> <span x-text="resCC.fredda.philadelphia + 'g'" class="font-bold"></span></div>
                         <div class="flex justify-between border-b pb-1 text-sm"><span>Panna Fresca</span> <span x-text="resCC.fredda.panna + 'g'" class="font-bold"></span></div>
                         <template x-if="resCC.fredda.latte > 0">
-                            <div class="flex justify-between border-b pb-1 text-sm text-blue-500"><span>Latte (Compensazione)</span> <span x-text="resCC.fredda.latte + 'g'" class="font-bold"></span></div>
+                            <div class="flex justify-between border-b pb-1 text-sm text-blue-500 font-bold italic"><span>+ Latte Intero</span> <span x-text="resCC.fredda.latte + 'g'"></span></div>
                         </template>
                         <div class="flex justify-between border-b pb-1 text-sm"><span>Zucchero</span> <span x-text="resCC.fredda.zucchero + 'g'" class="font-bold"></span></div>
-                        <div class="flex justify-between text-sm font-bold text-blue-600"><span>Gelatina</span> <span x-text="resCC.fredda.gelatina + 'g'"></span></div>
+                        <div class="flex justify-between text-sm">
+    						<div>
+      						  <span>Gelatina</span>
+      							  <span class="text-[9px] text-blue-400 block" x-text="'+' + (resCC.fredda.gelGrams * 5).toFixed(1) + 'g acqua'"></span>
+							</div>
+    							<span x-text="resCC.fredda.gelValue" class="font-bold"></span>
+						</div>
                     </div>
                 </section>
 
@@ -105,11 +127,11 @@
                         <div class="flex justify-between border-b pb-1 text-sm"><span>Uova (medie)</span> <span x-text="resCC.basca.uova" class="font-bold"></span></div>
                         <div class="flex justify-between border-b pb-1 text-sm"><span>Panna Liquida</span> <span x-text="resCC.basca.panna + 'g'" class="font-bold"></span></div>
                         <template x-if="resCC.basca.latte > 0">
-                            <div class="flex justify-between border-b pb-1 text-sm text-orange-600"><span>Latte (Compensazione)</span> <span x-text="resCC.basca.latte + 'g'" class="font-bold"></span></div>
+                            <div class="flex justify-between border-b pb-1 text-sm text-orange-600 font-bold italic"><span>+ Latte Intero</span> <span x-text="resCC.basca.latte + 'g'"></span></div>
                         </template>
-                        <div class="flex justify-between text-sm font-bold text-orange-600">
-                            <span x-text="cc.tipoAddensante === 'farina' ? 'Farina 00' : 'Amido di Mais'"></span> 
-                            <span x-text="resCC.basca.addensante + 'g'"></span>
+                        <div class="flex justify-between text-sm">
+                            <span x-text="cc.tipoAddensante === 'farina' ? 'Farina 00' : 'Amido di Mais'">Farina 00</span> 
+                            <span x-text="resCC.basca.addensante + 'g'" class="font-bold"></span>
                         </div>
                     </div>
                 </section>
@@ -119,8 +141,8 @@
         <div x-show="tab === 'crema'" x-cloak class="space-y-6">
             <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                 <div class="flex justify-between items-center">
-                    <h2 class="font-bold text-indigo-600">🧀 Mix Formaggi</h2>
-                    <span class="text-xs font-bold text-indigo-400" x-text="'Tot: ' + totalFormaggio + 'g'"></span>
+                    <h2 class="font-bold text-rose-500">🧀 Mix Formaggi</h2>
+                    <span class="text-xs font-bold text-rose-500" x-text="'Tot: ' + totalFormaggio + 'g'"></span>
                 </div>
                 <div class="space-y-3">
                     <template x-for="(item, index) in mix" :key="index">
@@ -138,23 +160,23 @@
                             <button @click="removeCheese(index)" class="text-rose-500 font-bold p-2">×</button>
                         </div>
                     </template>
-                    <button @click="addCheese()" x-show="mix.length < 3" class="w-full py-2 border-2 border-dashed border-indigo-100 text-indigo-400 text-xs font-bold rounded-lg">+ AGGIUNGI FORMAGGIO</button>
+                    <button @click="addCheese()" x-show="mix.length < 4" class="w-full py-2 border-2 border-dashed border-rose-500 text-rose-500 text-xs font-bold rounded-lg">+ AGGIUNGI FORMAGGIO</button>
                 </div>
             </section>
 
-            <div class="bg-indigo-600 text-white p-6 rounded-2xl shadow-xl space-y-4">
+            <div class="bg-rose-500 text-white p-6 rounded-2xl shadow-xl space-y-4">
                 <div class="space-y-3">
-                    <div class="flex justify-between items-center border-b border-indigo-500 pb-2">
+                    <div class="flex justify-between items-center border-b pb-2">
                         <span>Panna Liquida</span>
                         <span class="text-2xl font-mono font-bold" x-text="resCrema.panna + 'g'"></span>
                     </div>
-                    <div class="flex justify-between items-center border-b border-indigo-500 pb-2">
-                        <span>Liquidi Extra (Latte/Brodo)</span>
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <span>Liquidi Extra</span>
                         <span class="text-2xl font-mono font-bold" x-text="resCrema.liquido + 'g'"></span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span>Addensante (Amido)</span>
-                        <span class="text-2xl font-mono font-bold text-yellow-300" x-text="resCrema.addensante + 'g'"></span>
+                        <span class="text-2xl font-mono font-bold" x-text="resCrema.addensante + 'g'"></span>
                     </div>
                 </div>
             </div>
@@ -184,133 +206,190 @@
                         <label class="flex justify-between text-xs font-bold mb-1">Altezza Prodotto: <span class="text-rose-600 font-bold" x-text="pc.h + ' cm'"></span></label>
                         <input type="range" min="2" max="10" step="0.5" x-model.number="pc.h" class="w-full">
                     </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Aroma</label>
+                            <button @click="pc.vaniglia = !pc.vaniglia" :class="pc.vaniglia ? 'bg-yellow-100 border-yellow-400 text-yellow-700' : 'bg-slate-100 text-slate-400'" class="w-full border rounded-lg p-2 text-xs font-bold transition-all">
+                                <span x-text="pc.vaniglia ? '🍦 Vaniglia ON' : '🍦 No Aromi'"></span>
+                            </button>
+                        </div>
+                        <div class="pt-1">
+                            <label class="flex justify-between text-[10px] font-bold text-slate-400 uppercase mb-1">Quota Latte: <span class="text-rose-600" x-text="pc.percLatte + '%'"></span></label>
+                            <input type="range" min="0" max="50" step="5" x-model.number="pc.percLatte" class="w-full">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+    					<div>
+        					<label class="block text-[10px] font-bold text-slate-400 uppercase">Tipo Gelatina</label>
+        					<select x-model="pc.tipoGelatina" class="w-full border rounded-lg p-2 text-sm bg-white">
+            					<option value="fogli">Fogli</option>
+            					<option value="polvere">Polvere</option>
+        					</select>
+    					</div>
+    					<template x-if="pc.tipoGelatina === 'fogli'">
+        					<div>
+            					<label class="block text-[10px] font-bold text-slate-400 uppercase">Peso Foglio (g)</label>
+            					<input type="number" step="0.1" x-model.number="pc.pesoFoglio" class="w-full border rounded-lg p-2 text-sm">
+        					</div>
+    					</template>
+					</div>
                 </div>
             </section>
 
-            <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-xl space-y-4">
-                <div class="text-center border-b border-slate-800 pb-2">
-                    <span class="text-[10px] text-rose-400 font-bold uppercase">Volume Totale: <span x-text="Math.round(resPC.vol) + 'ml'"></span></span>
-                </div>
+            <div class="bg-rose-500 text-white p-6 rounded-2xl shadow-xl space-y-4">
                 <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-slate-400 text-sm">Panna Fresca</span>
-                        <span class="text-xl font-bold font-mono" x-text="Math.round(resPC.vol) + 'g'"></span>
+                    <div class="flex justify-between items-center border-b border-white-800 pb-1">
+                        <span class="text-white-400 text-sm">Panna Fresca</span>
+                        <span class="text-xl font-bold font-mono text-white" x-text="resPC.panna + 'g'"></span>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-slate-400 text-sm">Zucchero</span>
-                        <span class="text-xl font-bold font-mono text-rose-400" x-text="resPC.zucchero + 'g'"></span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <span class="text-slate-400 text-sm block">Gelatina</span>
-                            <span class="text-[9px] text-slate-500" x-text="'+' + (resPC.gelGrams * 5) + 'g acqua'"></span>
+                    <template x-if="resPC.latte > 0">
+                        <div class="flex justify-between items-center border-b border-white-800 pb-1 text-white-300 italic">
+                            <span class="text-sm">Latte Intero</span>
+                            <span class="text-xl font-bold font-mono" x-text="resPC.latte + 'g'"></span>
                         </div>
-                        <span class="text-xl font-bold font-mono" x-text="resPC.gelValue"></span>
+                    </template>
+                    <div class="flex justify-between items-center border-b border-white-800 pb-1 text-white-300">
+                        <span class="text-white-400 text-sm">Zucchero</span>
+                        <span class="text-xl font-bold font-mono text-white-400" x-text="resPC.zucchero + 'g'"></span>
                     </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-slate-800">
+   					 <div>
+     				   <span class="text-white-400 text-sm block">Gelatina</span>
+      				   <span class="text-[9px] text-white-500 italic" x-text="'+' + (resPC.gelGrams * 5).toFixed(1) + 'g acqua'"></span>
+   					 </div>
+   						<span class="text-xl font-bold font-mono text-yellow-400" x-text="resPC.gelValue"></span>
+					</div>
+                    <template x-if="pc.vaniglia">
+                        <div class="flex justify-between items-center text-white-200 border-t border-white-800 pt-2">
+                            <span>Aroma consigliato</span>
+                            <span class="text-xl font-mono font-bold" x-text="resPC.vanigliaDose"></span>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
         
-        <p class="text-center text-[10px] text-slate-400 uppercase tracking-widest mt-8">© 2026 Matteo Maero • v1.4</p>
+        <p class="text-center text-[10px] text-slate-400 uppercase tracking-widest mt-8">© 2026 Matteo Maero • v1.5</p>
     </main>
 
     <script>
-        function app() {
-            return {
-                tab: 'cheesecake',
+    function app() {
+        return {
+            tab: 'cheesecake',
+            
+            // --- CHEESECAKE LOGIC ---
+            cc: { diametro: 22, altezza: 4.5, dolcezza: 0.3, consistenza: 0.6, tipoAddensante: 'farina', percLatte: 0, tipoGelatina: 'fogli', pesoFoglio: 2.0},
+            resetCC() { this.cc = { diametro: 22, altezza: 4.5, dolcezza: 0.3, consistenza: 0.6, tipoAddensante: 'farina', percLatte: 0, tipoGelatina: 'fogli', pesoFoglio: 2.0 } },
+            
+            get resCC() {
+                const r_ref = 11; const h_ref = 4.5;
+                const vol_ref = Math.PI * Math.pow(r_ref, 2) * h_ref;
+                const r_cur = this.cc.diametro / 2;
+                const vol_cur = Math.PI * Math.pow(r_cur, 2) * this.cc.altezza;
+                const scala = vol_cur / vol_ref;
+                const scalaSuperficie = Math.pow(this.cc.diametro, 2) / 484;
+                const fattoreCorrezione = 1 + (this.cc.percLatte / 200);
+
+                let farinaBase = 45 * scala;
+                let addensanteFinale = this.cc.tipoAddensante === 'amido' ? 
+                    Math.round(farinaBase * 0.75 * fattoreCorrezione) : 
+                    Math.round(farinaBase * fattoreCorrezione);
                 
-                // --- CHEESECAKE LOGIC ---
-                cc: { diametro: 22, altezza: 4.5, dolcezza: 0.3, consistenza: 0.6, tipoAddensante: 'farina', percLatte: 0 },
-                resetCC() { this.cc = { diametro: 22, altezza: 4.5, dolcezza: 0.3, consistenza: 0.6, tipoAddensante: 'farina', percLatte: 0 } },
-                get resCC() {
-                    const r_ref = 11; const h_ref = 4.5;
-                    const vol_ref = Math.PI * Math.pow(r_ref, 2) * h_ref;
-                    const r_cur = this.cc.diametro / 2;
-                    const vol_cur = Math.PI * Math.pow(r_cur, 2) * this.cc.altezza;
-                    const scala = vol_cur / vol_ref;
-                    const scalaSuperficie = Math.pow(this.cc.diametro, 2) / 484;
+                let gelG = 10 * scala * (Number(this.cc.consistenza) + 0.4) * fattoreCorrezione;
+                const pannaFreddaTot = 250 * scala;
+                const pannaBascaTot = 350 * scala;
+                const latteFredda = Math.round(pannaFreddaTot * (this.cc.percLatte / 100));
+                const latteBasca = Math.round(pannaBascaTot * (this.cc.percLatte / 100));
 
-                    // --- NUOVA LOGICA DI COMPENSAZIONE ---
-                    // Se aumentiamo il latte, aumentiamo leggermente gli addensanti (max +25% se latte al 50%)
-                    const fattoreCorrezione = 1 + (this.cc.percLatte / 200);
-
-                    let farinaBase = 45 * scala;
-                    let addensanteFinale = this.cc.tipoAddensante === 'amido' ? 
-                        Math.round(farinaBase * 0.75 * fattoreCorrezione) : 
-                        Math.round(farinaBase * fattoreCorrezione);
-
-                    const pannaFreddaTot = 250 * scala;
-                    const pannaBascaTot = 350 * scala;
-                    const latteFredda = Math.round(pannaFreddaTot * (this.cc.percLatte / 100));
-                    const latteBasca = Math.round(pannaBascaTot * (this.cc.percLatte / 100));
-
-                    return {
-                        biscotti: Math.round(200 * scalaSuperficie),
-                        burro: Math.round(90 * scalaSuperficie),
-                        fredda: {
-                            philadelphia: Math.round(500 * scala),
-                            panna: Math.round(pannaFreddaTot - latteFredda),
-                            latte: latteFredda,
-                            zucchero: Math.round(500 * scala * this.cc.dolcezza),
-                            // Gelatina compensata per la quota latte
-                            gelatina: Math.round(10 * scala * (Number(this.cc.consistenza) + 0.4) * fattoreCorrezione)
-                        },
-                        basca: {
-                            philadelphia: Math.round(600 * scala),
-                            zucchero: Math.round(600 * scala * this.cc.dolcezza),
-                            uova: Math.max(1, Math.round(4 * scala)),
-                            panna: Math.round(pannaBascaTot - latteBasca),
-                            latte: latteBasca,
-                            addensante: addensanteFinale
-                        }
+                return {
+                    biscotti: Math.round(200 * scalaSuperficie),
+                    burro: Math.round(90 * scalaSuperficie),
+                    fredda: {
+                        philadelphia: Math.round(500 * scala),
+                        panna: Math.round(pannaFreddaTot - latteFredda),
+                        latte: latteFredda,
+                        zucchero: Math.round(500 * scala * this.cc.dolcezza),
+                        gelGrams: gelG, 
+                        gelValue: this.cc.tipoGelatina === 'fogli' 
+                            ? (gelG / this.cc.pesoFoglio).toFixed(1) + " fogli" 
+                            : gelG.toFixed(1) + "g"
+                    },
+                    basca: {
+                        philadelphia: Math.round(600 * scala),
+                        zucchero: Math.round(600 * scala * this.cc.dolcezza),
+                        uova: Math.max(1, Math.round(4 * scala)),
+                        panna: Math.round(pannaBascaTot - latteBasca),
+                        latte: latteBasca,
+                        addensante: addensanteFinale
                     }
-                },
+                }
+            },
 
-                // --- CREMA FORMAGGI LOGIC ---
-                coeffs: {
-                    "Fresco (Philadelphia)": { p: 0.5, l: 0.05, a: 0.00 },
-                    "Cremoso (Mascarpone)": { p: 0.4, l: 0.05, a: 0.00 },
-                    "Semi-stagionato": { p: 0.7, l: 0.15, a: 0.01 },
-                    "Stagionato (Pecorino)": { p: 0.9, l: 0.25, a: 0.02 },
-                    "Filante (Fontina)": { p: 0.6, l: 0.15, a: 0.01 },
-                    "Erborinato (Zola)": { p: 0.7, l: 0.05, a: 0.00 }
-                },
-                mix: [{ tipo: 'Fresco (Philadelphia)', peso: 200 }],
-                consistenzaIndex: 1,
-                addCheese() { this.mix.push({ tipo: 'Cremoso (Mascarpone)', peso: 100 }) },
-                removeCheese(i) { this.mix.splice(i, 1) },
-                get totalFormaggio() { return this.mix.reduce((sum, item) => sum + item.peso, 0) },
-                get resCrema() {
-                    let totalP = 0, totalL = 0, totalA = 0;
-                    this.mix.forEach(item => {
-                        let c = this.coeffs[item.tipo];
-                        totalP += item.peso * c.p;
-                        totalL += item.peso * c.l;
-                        totalA += item.peso * c.a;
-                    });
-                    return {
-                        panna: Math.round(totalP),
-                        liquido: Math.round(totalL),
-                        addensante: (totalA).toFixed(1)
-                    }
-                },
+            // --- CREMA FORMAGGI LOGIC ---
+            coeffs: {
+                "Fresco (Philadelphia)": { p: 0.5, l: 0.05, a: 0.00 },
+                "Cremoso (Mascarpone)": { p: 0.4, l: 0.05, a: 0.00 },
+                "Semi-stagionato": { p: 0.7, l: 0.15, a: 0.01 },
+                "Stagionato (Pecorino)": { p: 0.9, l: 0.25, a: 0.02 },
+                "Filante (Fontina)": { p: 0.6, l: 0.15, a: 0.01 },
+                "Erborinato (Zola)": { p: 0.7, l: 0.05, a: 0.00 }
+            },
+            mix: [{ tipo: 'Fresco (Philadelphia)', peso: 200 }],
+            addCheese() { this.mix.push({ tipo: 'Cremoso (Mascarpone)', peso: 100 }) },
+            removeCheese(i) { this.mix.splice(i, 1) },
+            get totalFormaggio() { return this.mix.reduce((sum, item) => sum + item.peso, 0) },
+            get resCrema() {
+                let totalP = 0, totalL = 0, totalA = 0;
+                this.mix.forEach(item => {
+                    let c = this.coeffs[item.tipo];
+                    totalP += item.peso * c.p;
+                    totalL += item.peso * c.l;
+                    totalA += item.peso * c.a;
+                });
+                return {
+                    panna: Math.round(totalP),
+                    liquido: Math.round(totalL),
+                    addensante: (totalA).toFixed(1)
+                }
+            },
 
-                // --- PANNA COTTA LOGIC ---
-                pc: { shape: 'round', round: { d: 20 }, rect: { l1: 20, l2: 15 }, h: 4, dolcezza: 0.18, consistenza: 1.0, tipoGelatina: 'fogli', pesoFoglio: 2.0 },
-                get resPC() {
-                    let vol = this.pc.shape === 'round' 
-                        ? Math.PI * Math.pow(this.pc.round.d / 2, 2) * this.pc.h 
-                        : this.pc.rect.l1 * this.pc.rect.l2 * this.pc.h;
-                    let gelG = (vol * 0.014 * this.pc.consistenza).toFixed(1);
-                    return {
-                        vol: vol,
-                        zucchero: Math.round(vol * this.pc.dolcezza),
-                        gelGrams: gelG,
-                        gelValue: this.pc.tipoGelatina === 'fogli' ? (gelG / this.pc.pesoFoglio).toFixed(1) + " fogli" : gelG + "g"
-                    }
+            // --- PANNA COTTA LOGIC ---
+            pc: { 
+                shape: 'round', 
+                round: { d: 20 }, 
+                rect: { l1: 20, l2: 15 }, 
+                h: 4, 
+                dolcezza: 0.18, 
+                tipoGelatina: 'fogli', 
+                pesoFoglio: 2.0, 
+                percLatte: 0, 
+                vaniglia: true 
+            },
+            get resPC() {
+                let r_cur = this.pc.shape === 'round' ? this.pc.round.d / 2 : 0;
+                let vol = this.pc.shape === 'round' 
+                    ? Math.PI * Math.pow(r_cur, 2) * this.pc.h 
+                    : this.pc.rect.l1 * this.pc.rect.l2 * this.pc.h;
+
+                let latte = Math.round(vol * (this.pc.percLatte / 100));
+                let panna = Math.round(vol - latte);
+                const fattoreCorrezione = 1 + (this.pc.percLatte / 200);
+                let gelG = vol * 0.014 * fattoreCorrezione; 
+
+                return {
+                    panna: panna,
+                    latte: latte,
+                    zucchero: Math.round(vol * this.pc.dolcezza),
+                    gelGrams: gelG,
+                    gelValue: this.pc.tipoGelatina === 'fogli' 
+                        ? (gelG / this.pc.pesoFoglio).toFixed(1) + " fogli" 
+                        : gelG.toFixed(1) + "g",
+                    vanigliaDose: vol > 1200 ? "2 Bacche" : (vol > 500 ? "1 Bacca" : "1/2 Bacca")
                 }
             }
         }
-    </script>
+    }
+</script>
 </body>
 </html>
